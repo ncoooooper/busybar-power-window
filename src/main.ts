@@ -7,8 +7,10 @@ let timer:ReturnType<typeof setInterval>|undefined;
 function draw():Frame{
  const title=!sample?(url?"Check bridge":"Power setup"):page===0?sample.charge+"%  "+sample.source:sample.window?(sample.window.active?"Restore":"Outage")+" "+sample.window.minutes+"m":"No window";
  const trend=sample?.window?(sample.window.active?"Window ends in ":"Outage in ")+sample.window.minutes+" min":"No upcoming window";
- return [label("value",title,0,0,page===0?mint:amber),rect("track",0,12,72,3,"#29373FFF"),
- rect("charge",0,12,Math.max(1,Math.round((sample?.charge||0)*0.72)),3,sample?.charge?mint:"#29373FFF"),
+ const filled=Math.round((sample?.charge||0)*72/100);
+ return [label("value",title,0,0,page===0?mint:amber),
+ ...(filled>0?[rect("charge",0,12,filled,3,mint)]:[]),
+ ...(filled<72?[rect("track",filled,12,72-filled,3,"#29373FFF")]:[]),
  ...panel("POWER WINDOW",[message,sample?"Reserve "+sample.charge+"% / "+sample.state:"Set bridge URL in settings",sample?trend:"Run bridge/power.py",
  "Wheel: switch view","Click: refresh","Automatic refresh: 60 sec"])];
 }
