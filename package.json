@@ -2,7 +2,7 @@
   "name": "busybar-power-window",
   "private": true,
   "version": "0.1.0",
-  "description": "Power Window",
+  "description": "See reserve battery charge, mains status and the next scheduled outage from your local power bridge.",
   "author": "ncoooooper",
   "type": "module",
   "scripts": {

@@ -1,66 +1,31 @@
-import { device } from "@shared/device";
-import { column, render, type Node } from "@busy-app/busy-lib";
-import manifest from "./appmeta/manifest.json";
+import {surface,panel,label,rect,mint,amber,report,type Frame} from "@shared/surface";
+import {loadValues} from "@shared/settings";
 
-/** The name the app draws under; the device clears elements by this id. */
-const APP = manifest.id;
-
-/** How often the screen is redrawn. */
-const TICK_MS = 1000;
-
-const WHITE = "#FFFFFFFF";
-const SUBTLE_WHITE = "#FFFFFF80";
-
-/**
- * The frame drawn on every tick. The screen is 72×16, so two short lines are about all that fits.
- */
-function frame(ticks: number): Node {
-  return column({ justify: "center", align: "center" }, [
-    { type: "text", id: "title", text: "Hello", font: "bold", color: WHITE },
-    {
-      type: "text",
-      id: "ticks",
-      text: String(ticks),
-      font: "small",
-      color: SUBTLE_WHITE,
-    },
-  ]);
+type Snapshot={charge:number;state:string;source:string;window:null|{active:boolean;minutes:number}};
+let sample:Snapshot|null=null, url="", message="Loading settings", page=0, busy=false,closed=false,lastTry=0;
+let timer:ReturnType<typeof setInterval>|undefined;
+function draw():Frame{
+ const title=!sample?(url?"Check bridge":"Power setup"):page===0?sample.charge+"%  "+sample.source:sample.window?(sample.window.active?"Restore":"Outage")+" "+sample.window.minutes+"m":"No window";
+ const trend=sample?.window?(sample.window.active?"Window ends in ":"Outage in ")+sample.window.minutes+" min":"No upcoming window";
+ return [label("value",title,0,0,page===0?mint:amber),rect("track",0,12,72,3,"#29373FFF"),
+ rect("charge",0,12,Math.max(1,Math.round((sample?.charge||0)*0.72)),3,sample?.charge?mint:"#29373FFF"),
+ ...panel("POWER WINDOW",[message,sample?"Reserve "+sample.charge+"% / "+sample.state:"Set bridge URL in settings",sample?trend:"Run bridge/power.py",
+ "Wheel: switch view","Click: refresh","Automatic refresh: 60 sec"])];
 }
-
-/** Sends one frame to the device. */
-async function draw(ticks: number): Promise<void> {
-  const elements = render(frame(ticks));
-  await device.DisplayDraw({ application_name: APP, priority: 50, elements });
+async function poll(){
+ if(!url||busy||closed||Date.now()-lastTry<1500)return;
+ busy=true;lastTry=Date.now();
+ try{
+   const response=await fetch(url);if(!response.ok)throw Error("HTTP "+response.status);
+   const value=await response.json() as Snapshot;
+   if(typeof value.charge!=="number"||value.charge<0||value.charge>100||typeof value.source!=="string"||!["mains","battery","unknown"].includes(value.state)||
+     (value.window!==null&&(!value.window||typeof value.window.active!=="boolean"||!Number.isFinite(value.window.minutes))))throw Error("Invalid reading");
+   sample=value;message="Live from "+value.source;console.log("power",sample.charge,sample.state,sample.window?.minutes);
+ }catch(error){message=sample?"Offline / last reading":"Bridge offline";console.log("power offline",String(error));}
+ finally{busy=false;if(!closed)refresh();}
 }
-
-/**
- * Entry point, called at the end of the file: the device runs this script from top to bottom and starts nothing by itself.
- */
-function main(): void {
-  let ticks = 0;
-  let stopped = false;
-
-  const report = (err: unknown) =>
-    console.error(`${APP}: ${err instanceof Error ? err.message : String(err)}`);
-
-  void draw(ticks).catch(report);
-
-  // Tick errors are reported, not thrown: one failed request must not stop the loop.
-  const timer = setInterval(() => {
-    ticks += 1;
-    void draw(ticks).catch(report);
-  }, TICK_MS);
-
-  // Back leaves the app. Once the timer is cleared and the handler detached, nothing keeps it alive and the device takes the screen back.
-  const unbind = listen("input", (event) => {
-    if (stopped || event.key !== "back" || event.action !== "short") return;
-
-    stopped = true;
-    clearInterval(timer);
-
-    // Not detached from inside the handler itself: with nothing else left the unbind stops the app on the spot, while this handler is still running.
-    setTimeout(unbind, 0);
-  });
-}
-
-main();
+const refresh=surface(draw,k=>{if(k==="ok"||k==="start")void poll();if(k==="up"||k==="down")page=1-page;},()=>{closed=true;if(timer!==undefined)clearInterval(timer);});
+void loadValues().then(v=>{
+ if(closed)return;url=String(v?.bridge||"").trim();message=url?"Connecting":"Setup required";refresh();
+ if(url){void poll();timer=setInterval(()=>void poll(),60000);}
+}).catch(report);
