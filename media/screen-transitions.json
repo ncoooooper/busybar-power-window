@@ -1,14 +1,14 @@
 {
   "app": "busybar-power-window",
-  "sha256": "e8f11f0e6d5c8600fe5c55c1792bd874df67dd9c61dc0790d50d2e1ea8393f53",
+  "sha256": "790df31294eab71681a92466b3f8ef079c7e34be32a869ef43b10d964963c2aa",
   "rapid_input_test": {
     "app": "io.ncoooooper.powerwindow",
-    "sha256": "e8f11f0e6d5c8600fe5c55c1792bd874df67dd9c61dc0790d50d2e1ea8393f53",
+    "sha256": "790df31294eab71681a92466b3f8ef079c7e34be32a869ef43b10d964963c2aa",
     "firmware": {
       "name": "1.3.1",
       "commit": "8edd2da4"
     },
-    "heap_peak_kib": 90.5,
+    "heap_peak_kib": 90.2,
     "budget_kib": 128.0,
     "exit": "finished"
   },
@@ -46,9 +46,9 @@
         ]
       ],
       "distinct_frames": [
-        2,
-        2,
-        5
+        10,
+        7,
+        27
       ],
       "rear_frames": 0,
       "rear_tour": null,
