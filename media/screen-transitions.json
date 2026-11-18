@@ -1,0 +1,47 @@
+{
+  "app": "busybar-power-window",
+  "sha256": "713962277ae9ecdf36d9af1c4894d47bab5bf3b4aa49d3fcf6139bb8e3e195c0",
+  "firmware": "1.3.1",
+  "cell": 16,
+  "lit": 14,
+  "front": [
+    72,
+    16
+  ],
+  "rear": [
+    160,
+    80
+  ],
+  "captures": [
+    {
+      "mode": "classic",
+      "guides": [
+        "reserve-to-outage",
+        "return-to-battery"
+      ],
+      "tour": "screen-transitions",
+      "input": [
+        [
+          "up"
+        ],
+        [
+          "down",
+          "ok"
+        ],
+        [
+          "down",
+          "up",
+          "ok"
+        ]
+      ],
+      "distinct_frames": [
+        2,
+        2,
+        5
+      ],
+      "rear_frames": 0,
+      "rear_tour": null,
+      "exit": "finished"
+    }
+  ]
+}

@@ -2,5 +2,5 @@
   "category": "smart-home",
   "short_description": "See reserve battery charge, mains status and the next scheduled outage from your local power bridge.",
   "description": "See reserve battery charge, mains status and the next scheduled outage from your local power bridge. The included Python bridge reads a Mac battery with pmset or a UPS through Network UPS Tools (upsc). It reads a local outage schedule on every request and returns the current or next window.",
-  "changelog": "First public version."
+  "changelog": "New screen transitions and high-contrast LED previews."
 }

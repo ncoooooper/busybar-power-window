@@ -4,6 +4,12 @@ See reserve battery charge, mains status and the next scheduled outage from your
 
 Put the charge level beside the next outage on the same device. A battery at 40% means something quite different when the power is due back in ten minutes than when the next scheduled cut is about to begin.
 
+## Screen transitions
+
+Turn between the reserve reading and the return-time estimate. The label changes above the value.
+
+![Power Window front display. Turn between the reserve reading and the return-time estimate. The label changes above the value.](media/guide/screen-transitions.gif)
+
 ## Check the reserve before disconnecting
 
 1. Start the bridge on the machine that can read your Mac battery or UPS. Enter its address in the app settings as described below.
@@ -38,6 +44,6 @@ Open BUSY Bar Emulator. From this repository, run:
 
 Press **Back** to exit.
 
-The GIFs are excerpts from the emulator recording. Each front-display pixel is shown at 9× its original width and height. The end frames pause for reading.
+The GIFs are excerpts from the emulator recording. Each LED occupies a 16 × 16 cell with a black border. The end frames pause for reading.
 
 [Full recording](media/controls.mp4) · [Rear display](screenshots/back-1.png) · [Firmware test](EMULATOR-QA.md) · [MIT license](LICENSE)
