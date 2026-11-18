@@ -9,8 +9,8 @@ function draw():Frame{
  const trend=sample?.window?(sample.window.active?"Window ends in ":"Outage in ")+sample.window.minutes+" min":"No upcoming window";
  const filled=Math.round((sample?.charge||0)*72/100);
  return [label("value",title,0,0,page===0?mint:amber),
- ...(filled>0?[rect("charge",0,12,filled,3,mint)]:[]),
- ...(filled<72?[rect("track",filled,12,72-filled,3,"#29373FFF")]:[]),
+ ...(filled>0?[rect("charge",0,0,filled,3,mint)]:[]),
+ ...(filled<72?[rect("track",filled,0,72-filled,3,"#29373FFF")]:[]),
  ...panel("POWER WINDOW",[message,sample?"Reserve "+sample.charge+"% / "+sample.state:"Set bridge URL in settings",sample?trend:"Run bridge/power.py",
  "Wheel: switch view","Click: refresh","Automatic refresh: 60 sec"])];
 }
