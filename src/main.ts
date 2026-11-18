@@ -26,7 +26,7 @@ async function poll(){
  }catch(error){message=sample?"Offline / last reading":"Bridge offline";console.log("power offline",String(error));}
  finally{busy=false;if(!closed)refresh();}
 }
-const refresh=surface(draw,k=>{if(k==="ok"||k==="start")void poll();if(k==="up"||k==="down")page=1-page;},()=>{closed=true;if(timer!==undefined)clearInterval(timer);});
+const refresh=surface(draw,k=>{if(k==="ok"||k==="start")void poll();if(k==="up"||k==="down")page=1-page;},()=>{closed=true;if(timer!==undefined)clearInterval(timer);},{enabled:false});
 void loadValues().then(v=>{
  if(closed)return;url=String(v?.bridge||"").trim();message=url?"Connecting":"Setup required";refresh();
  if(url){void poll();timer=setInterval(()=>void poll(),60000);}
